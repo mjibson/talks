@@ -1,0 +1,64 @@
+Go on App Engine
+now just as pleasant as python
+16 Apr 2013
+
+Matt Jibson
+Software Developer, Stack Exchange
+matt.jibson@gmail.com
+http://mattjibson.com/
+@mjibson
+
+* go
+
+- go apps are fun
+- go web apps are fun
+- go app engine apps are not
+
+* go on app engine
+
+- fast
+- ~instant startup
+
+but
+
+- datastore API is annoying
+- existing autocaching libraries are ok, not great (NDB)
+- no appstats
+- no web profiling (miniprofiler)
+
+python is slower, but has these, so it wins
+
+* appstats
+
+- profiles all service calls (database, memcache, file save/fetch, HTTP fetch, email, etc.)
+- timing, stack trace
+- necessary for production development of any app engine app
+
+.image appstats-timeline.png
+
+* base app engine app
+
+.code base.go
+
+* install appstats
+
+.code appstats.go
+
+- one import
+- two lines changed per controller
+
+* miniprofiler
+
+.image miniprofiler.png
+
+- mini-profiler to quickly see request timings
+- AJAX support
+- perfect for finding slow things
+
+* install miniprofiler (on app engine)
+
+.code miniprofiler.go
+
+* install miniprofiler (without app engine)
+
+.code miniprofiler-nogae.go
