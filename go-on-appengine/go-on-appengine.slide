@@ -3,9 +3,7 @@ now just as pleasant as python
 16 Apr 2013
 
 Matt Jibson
-Software Developer, Stack Exchange
-matt.jibson@gmail.com
-http://mattjibson.com/
+Stack Exchange
 @mjibson
 
 * go
@@ -23,7 +21,7 @@ go web apps are fun
 - builtin templates
 - can do most stuff in std lib
 
-* go app engine apps are not
+* go app engine apps are not fun
 
 good:
 
@@ -48,6 +46,8 @@ no matter how good go was, i would never use it without
 - miniprofiler
 
 let's make them
+
+* goon
 
 * NDB
 
@@ -164,6 +164,8 @@ needed something better, like...
 
 * appstats
 
+* appstats
+
 - profiles all service calls (database, memcache, file save/fetch, HTTP fetch, email, etc.)
 - timing, stack trace
 - necessary for production development of any app engine app
@@ -180,6 +182,8 @@ needed something better, like...
 
 - one import
 - two lines changed per controller
+
+* miniprofiler
 
 * miniprofiler
 
