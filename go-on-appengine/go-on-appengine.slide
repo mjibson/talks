@@ -158,6 +158,10 @@ or an existing `appengine.Context`:
 
 	n := goon.FromContext(c)
 
+goon development was done using printfs
+
+needed something better, like...
+
 * appstats
 
 - profiles all service calls (database, memcache, file save/fetch, HTTP fetch, email, etc.)
