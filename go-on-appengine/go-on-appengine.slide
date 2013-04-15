@@ -1,4 +1,4 @@
-Go on App Engine
+go on app engine
 now just as pleasant as python
 16 Apr 2013
 
@@ -10,23 +10,153 @@ http://mattjibson.com/
 
 * go
 
-- go apps are fun
-- go web apps are fun
-- go app engine apps are not
+go apps are fun
 
-* go on app engine
+- go routines
+- channels
+- fast
+- feels pythony
+
+go web apps are fun
+
+- builtin webserver, path routing
+- builtin templates
+- can do most stuff in std lib
+
+* go app engine apps are not
+
+good:
 
 - fast
 - ~instant startup
 
-but
+bad:
 
 - datastore API is annoying
-- existing autocaching libraries are ok, not great (NDB)
+- existing autocaching libraries are ok, not great
 - no appstats
 - no web profiling (miniprofiler)
 
 python is slower, but has these, so it wins
+
+* make it better
+
+no matter how good go was, i would never use it without
+
+- NDB
+- appstats
+- miniprofiler
+
+let's make them
+
+* NDB
+
+memcache and datastore are two most useful app engine features
+
+typical workflow:
+
+- user requests a thing
+- look in memcache for it
+- hit: return
+- miss: download from datastore, save to memcache, return
+
+want to automate this. hard parts:
+
+- writes, deletes, multi
+
+NDB does all this
+
+* datastore API
+
+- must keep track of three objects (context, key, entity)
+- annoying and tedious for larger programs
+- due to go's design, necessary (no per-thread cache)
+
+go:
+
+	c := appengine.NewContext(r)
+	k := datastore.NewKey(c, "Entity", "stringID", 0, nil)
+	e := new(Entity)
+	if err := datastore.Get(c, k, e); err != nil {
+		return
+	}
+
+python:
+
+	e = ndb.Key('Entity', 'stringID').get()
+	if not e:
+		return
+
+* goon
+
+NDB-like autocaching library
+
+- Get, GetMulti, Put, PutMulti, Delete, DeleteMulti, Queries
+- key-based operations backed by memory and memcache
+- per-request, in-memory cache
+- intelligent multi support
+- cached transaction results
+- automatic kind naming
+- simpler api than appengine/datastore
+
+* goon api comparison: put with new key
+
+assume the following exists:
+
+	type Group struct {
+		name string
+	}
+	c := appengine.NewContext(r)
+	n := goon.NewGoon(r)
+	g := &Group{ name: "test" }
+
+appengine/datastore:
+
+	k := datastore.NewIncompleteKey(c, "Group", nil)
+	err := datastore.Put(c, k, g)
+
+goon:
+
+	e, _ := n.NewEntity(nil, g) // nil parent
+	err := n.Put(e)
+
+no: context, key, kind specification
+
+* goon api comparison: get known key
+
+assume the following exists:
+
+	type Group struct {
+		name string
+	}
+	c := appengine.NewContext(r)
+	n := goon.NewGoon(r)
+	g := new(Group)
+
+appengine/datastore:
+
+	k := datastore.NewKey(c, "Group", "stringID", 0, nil)
+	err := datastore.Get(c, k, g)
+
+goon:
+
+	e, err := n.GetById(g, "stringId", 0, nil)
+
+no: context, key, kind specification
+
+* goon installation
+
+an import:
+
+	import "github.com/mjibson/goon"
+
+then make one from your `*http.Request`:
+
+	n := goon.NewGoon(r)
+
+or an existing `appengine.Context`:
+
+	n := goon.FromContext(c)
 
 * appstats
 
