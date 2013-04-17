@@ -184,7 +184,7 @@ needed something better, like...
 
 * appstats
 
-- profiles all service calls (database, memcache, file save/fetch, HTTP fetch, email, etc.)
+- profiles service calls (database, memcache, file save/fetch, HTTP fetch, email, etc.)
 - timing, stack trace
 - necessary for production development of any app engine app
 
@@ -200,6 +200,8 @@ needed something better, like...
 
 - one import
 - two lines changed per controller
+
+* appstats demo
 
 * miniprofiler
 
@@ -218,6 +220,16 @@ needed something better, like...
 * install miniprofiler (without app engine)
 
 .code miniprofiler-nogae.go
+
+* miniprofiler steps
+
+.code miniprofiler-step.go
+
+* miniprofiler steps
+
+.code miniprofiler-step2.go
+
+* miniprofiler demo
 
 * conclusion
 
