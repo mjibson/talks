@@ -1,0 +1,75 @@
+Nintendo Music Emulation with Go
+7 Jul 2014
+
+Matt Jibson
+Stack Overflow
+@mjibson
+
+* reasons
+
+wanted a music player with various features
+
+one was Nintendo music support
+
+* Nintendo music
+
+copy NES cartridge data (ROM) to a computer
+
+write a program that emulates the NES sound hardware:
+
+- CPU: 6502
+- APU (audio chip): 2A03
+- 64K of memory
+
+* emulation
+
+ROM: instructions for CPU
+
+some instructions write data to special locations in memory
+
+these locations are wired to and control the sound chip
+
+the instructions control output voltage of the sound chip
+
+sample that to get sound
+
+* 6502
+
+- invented in 1975
+- 8-bit microprocessor
+- also used in: Atari, Commodore 64, Apple II
+
+can do things like:
+
+- math: add, subtract, mult, divide
+- logic: or, and
+- write/read memory
+
+* 2A03
+
+4 wave generators
+
+- 2 square waves (treble)
+- 1 triangle wave (bass)
+- 1 noise generator (drums, other effects)
+
+various registers (memory locations) control each
+
+waves added together for output
+
+* go
+
+language from google
+
+invented by real smart folks formerly of Bell Labs
+
+good for web and systems programming
+
+like the Nintendo Entertainment System
+
+great at 8-bit emulation
+
+- uint8 type for easy operations
+- bitwise operators (&, |, <<, ^)
+- good memory control
+- fun
