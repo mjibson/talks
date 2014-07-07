@@ -73,3 +73,7 @@ great at 8-bit emulation
 - bitwise operators (&, |, <<, ^)
 - good memory control
 - fun
+
+* links
+
+.link http://godoc.org/github.com/mjibson/mog/codec/nsf
