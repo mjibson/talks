@@ -1,0 +1,44 @@
+bosun: some techniques
+9 Dec 2014
+
+Matt Jibson
+Stack Overflow
+@mjibson
+
+* bosun
+
+monitoring and alerting service
+
+needs to not go down when other things go down
+
+so it must do a lot of things itself
+
+i thought most of these were hard, but they were just unknown
+
+going to talk about a few:
+
+- parsing
+- state
+- locks
+
+* parsing
+
+we have lots of time series data
+
+need to query it
+
+then reduce it down to a yes/no for an alert
+
+for powerful rules, need functions, operators, precedence
+
+* parsing
+
+always thought it was too hard
+
+turns out it's not
+
+use text/template as a base, and extend from there
+
+* parsing
+
+first step is the lexer
