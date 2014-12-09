@@ -29,7 +29,9 @@ need to query it
 
 then reduce it down to a yes/no for an alert
 
-for powerful rules, need functions, operators, precedence
+for powerful rules, need functions, operators, precedence:
+
+.play expr-demo.go /^func/,/^}/
 
 * parsing
 
@@ -39,6 +41,179 @@ turns out it's not
 
 use text/template as a base, and extend from there
 
+it's just three files: lex.go, parse.go, node.go
+
+parsing consists of:
+
+1. converting a file from characters into tokens
+2. making sure the tokens are in a valid order
+3. enabling something useful with the validated tokens
+
+* lexer
+
+converts characters into tokens
+
+what are the tokens we need?
+
+	itemNot       // '!'
+	itemAnd       // '&&'
+	itemOr        // '||'
+	itemGreater   // '>'
+	itemLess      // '<'
+	itemGreaterEq // '>='
+	itemLessEq    // '<='
+	itemEq        // '=='
+	itemNotEq     // '!='
+	itemPlus      // '+'
+	itemMinus     // '-'
+	itemMult      // '*'
+	itemDiv       // '/'
+	itemNumber    // simple number
+	itemComma
+	itemLeftParen
+	itemRightParen
+	itemString
+	itemFunc
+
+* lexer
+
+so we change just the inner loop of lex.go to look for those
+
+	// stateFn represents the state of the scanner as a function that returns the next state.
+	type stateFn func(*lexer) stateFn
+
+	func lexItem(l *lexer) stateFn {
+		for {
+			switch r := l.next(); {
+			case isSymbol(r):
+				return lexSymbol
+			case isNumber(r):
+				l.backup()
+				return lexNumber
+			case unicode.IsLetter(r):
+				return lexFunc
+			// etc...
+
+note use of recursive type stateFn described in Ian's Google I/O talk
+
+.link http://talks.golang.org/2014/compiling.slide#6
+
+* parser
+
+consumes tokens and makes sure they are in correct order
+
+need a grammar to express them with precedence
+
+other people have already done the really hard work
+
+.link http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm#classic
+
+* grammar
+
+so we make our own grammar:
+
+	O -> A {"||" A}
+	A -> C {"&&" C}
+	C -> P {( "==" | "!=" | ">" | ">=" | "<" | "<=") P}
+	P -> M {( "+" | "-" ) M}
+	M -> F {( "*" | "/" ) F}
+	F -> v | "(" O ")" | "!" O | "-" O
+	v -> number | func(..)
+	Func -> name "(" param {"," param} ")"
+	param -> number | "string" | [query]
+
+and copy the implementation from the website
+
+nothing difficult here, just unfamiliar
+
+* grammar example
+
+	func (t *Tree) O() Node {
+		n := t.A()
+		for {
+			switch t.peek().typ {
+			case itemOr:
+				n = newBinary(t.next(), n, t.A())
+			default:
+				return n
+			}
+		}
+	}
+
+	func (t *Tree) A() Node {
+		n := t.C()
+		for {
+			switch t.peek().typ {
+			case itemAnd:
+				n = newBinary(t.next(), n, t.C())
+			default:
+				return n
+			}
+		}
+	}
+
 * parsing
 
-first step is the lexer
+now we have a syntax tree we can execute various times
+
+summary:
+
+parsing is well studied
+
+it's straightforward to write a lexer and parser based off of that work
+
+* state
+
+* storing and querying data
+
+bosun indexes lots of data for fast searching
+
+also stores state history
+
+don't want to rely on an external database
+
+need an integrated solution
+
+* storage
+
+first idea: store stuff in memory and dump to disk sometimes
+
+but due to parallel writes and reads we need locks
+
+apparently state and locks are the same topic
+
+* gob
+
+- work in memory and dump to a file after enough changes
+- read it during init
+- easy to use
+- fast since it's all in memory
+- no need to worry about converting into a storeable data structure
+
+but:
+
+- doesn't scale well
+- can't change data structures easily
+- have to lock correctly (double locks and other bugs too easy)
+- have to pause the world to write or read to disk
+
+* problems
+
+- need to store more data than memory capacity
+- need to support multiple writers and readers without breaking
+
+solutions:
+
+use a Go, embedded database, there are many:
+
+goleveldb, cznic/ql, cznic/kv, bolt
+
+(not wrappers around a C library)
+
+something else? still thinking about this
+
+* conclusion
+
+go comes with lots of powerful building blocks to do complicated things
+
+the unknown problems are just new, and are understandable, not difficult
