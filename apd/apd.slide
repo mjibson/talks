@@ -1,0 +1,113 @@
+Arbitrary-precision Decimals
+GoSF Meetup
+21 Jun 2017
+
+Matt Jibson
+Cockroach Labs
+@mjibson
+
+* Decimals
+
+Anyone know what arbitrary or multiple precision decimals are?
+
+Anyone ever needed them before?
+
+I never did until working on a database.
+
+As this is a pretty obscure problem, let's attempt to learn more about Go's number types.
+
+* Number types in Go
+
+- int, int32, int64
+- float32, float64
+- big.Int
+- big.Float
+- big.Rat
+
+Ints are limited, floats don't represent all decimals.
+
+* Why don't you just use big.Float?
+
+Bump up the precision real high:
+
+.play -edit big_float.go /^func main/,/^}/
+
+- still a binary representation
+- has the same problems as normal floats
+- no NaN
+
+* Why don't you just use big.Rat?
+
+Uses two `big.Ints`: no accuracy problem like `big.Float`:
+
+.play -edit big_rat.go /^func main/,/^}/
+
+- but no exponent support
+- no rounding modes
+- no NaN, Inf
+
+* Why don't you just use an existing package?
+
+github.com/ericlagergren/decimal
+
+- fast but too many bugs when I tested
+
+github.com/shopspring/decimal
+
+- slow and differed in goals
+
+gopkg.in/inf.v0
+
+- last commit in 2015, lacked features
+
+None had the features, speed or testing we wanted.
+
+* APD
+
+github.com/cockroachdb/apd
+
+Goals
+
+- no panics
+- standard functions: `sqrt`, `ln`, `pow`, etc
+- accurate and configurable precision
+- good performance
+- well tested
+
+* Features
+
+- NaN
+- Inf
+- Function implementations based on academic papers
+- Very close to Java BigDecimal and Python decimal
+
+* Demos
+
+* Inexact operation detection
+
+.play -edit inexact.go /^func main/,/^}/
+
+* Overflow detection
+
+.play -edit overflow.go /^func main/,/^}/
+
+* Quantizing
+
+.play -edit quantize.go /^func main/,/^}/
+
+Useful if you've ever needed `func`round(x`float64)`float64`
+
+(Bonus: `math.Round` is coming in Go 1.10.)
+
+* Conversion to Integer
+
+.play -edit tointegral.go /^func main/,/^}/
+
+* CockroachDB
+
+Used by CockroachDB to implement the SQL Decimal type.
+
+- Replaced another package
+- Much faster, more accurate
+
+(We have a monthly user group in SF.)
