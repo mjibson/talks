@@ -12,7 +12,7 @@ Anyone know what arbitrary or multiple precision decimals are?
 
 Anyone ever needed them before?
 
-I never did until working on a database.
+Didn't need this until working on the SQL Decimal type in CockroachDB.
 
 As this is a pretty obscure problem, let's attempt to learn more about Go's number types.
 
@@ -107,7 +107,7 @@ Useful if you've ever needed `func`round(x`float64)`float64`
 
 Used by CockroachDB to implement the SQL Decimal type.
 
-- Replaced another package
+- Replaced another package (gopkg.in/inf.v0)
 - Much faster, more accurate
 
 (We have a monthly user group in SF.)
