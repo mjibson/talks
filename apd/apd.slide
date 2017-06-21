@@ -111,3 +111,5 @@ Used by CockroachDB to implement the SQL Decimal type.
 - Much faster, more accurate
 
 (We have a monthly user group in SF.)
+
+.image logo.svg 70 _
