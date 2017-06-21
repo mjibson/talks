@@ -24,7 +24,13 @@ As this is a pretty obscure problem, let's attempt to learn more about Go's numb
 - big.Float
 - big.Rat
 
-Ints are limited, floats don't represent all decimals.
+* Problems with floats
+
+.play -edit round.go /^func main/,/OMIT/
+
+Floats are good at binary, but humans use decimals.
+
+.link https://www.reddit.com/r/golang/comments/6ieorm/how_to_round_2100825_to_210083/ source: /r/golang: How to round 2100.825 to 2100.83?
 
 * Why don't you just use big.Float?
 
