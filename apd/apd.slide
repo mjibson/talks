@@ -24,7 +24,7 @@ As this is a pretty obscure problem, let's attempt to learn more about Go's numb
 - big.Float
 - big.Rat
 
-* Problems with floats
+* Why decimals?
 
 .play -edit round.go /^func main/,/OMIT/
 
@@ -97,7 +97,7 @@ Goals
 
 .play -edit overflow.go /^func main/,/^}/
 
-* Quantizing
+* Quantizing (rounding)
 
 .play -edit quantize.go /^func main/,/^}/
 
